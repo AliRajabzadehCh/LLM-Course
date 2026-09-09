@@ -1,0 +1,852 @@
+[
+  {
+    "id": "benchmark_001",
+    "question": "What architectural change turns causal transformer attention into the bidirectional attention used by masked language models?",
+    "choices": {
+      "A": "Sampling tokens autoregressively from left to right during inference",
+      "B": "Replacing the feedforward sublayer with a convolutional layer",
+      "C": "Using only the [CLS] token as input to every attention head",
+      "D": "Removing the attention masking step so each token can attend to future tokens as well as previous ones"
+    },
+    "answer": "D",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.1.1 The architecture for bidirectional masked models",
+    "page_number": 3,
+    "evidence": "For bidirectional attention, the chapter says to use the unmasked version of the QK matrix; the attention computation is the same as causal attention but with the mask removed.",
+    "question_type": "architecture"
+  },
+  {
+    "id": "benchmark_002",
+    "question": "Why does the chapter say next-word prediction becomes trivial if the causal mask is removed?",
+    "choices": {
+      "A": "The token embeddings are no longer updated during training",
+      "B": "The model dimension is too small to store the vocabulary",
+      "C": "The [SEP] token always reveals the sentence boundary",
+      "D": "The answer is directly available from the context when attention can see future tokens"
+    },
+    "answer": "D",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.2 Training Bidirectional Encoders",
+    "page_number": 4,
+    "evidence": "Eliminating the causal mask lets the model see the token it would otherwise have to predict, so the chapter introduces a cloze-style objective instead.",
+    "question_type": "motivation"
+  },
+  {
+    "id": "benchmark_003",
+    "question": "In the original BERT masked-language-modeling procedure, what percentage of selected tokens are replaced by the special [MASK] token?",
+    "choices": {
+      "A": "50%",
+      "B": "15%",
+      "C": "80%",
+      "D": "10%"
+    },
+    "answer": "C",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.2.1 Masking Words",
+    "page_number": 4,
+    "evidence": "The chapter states that 15% of tokens are chosen for manipulation and, of those selected tokens, 80% are replaced with [MASK].",
+    "question_type": "method_detail"
+  },
+  {
+    "id": "benchmark_004",
+    "question": "Which statement best describes which tokens contribute directly to the MLM loss in BERT training?",
+    "choices": {
+      "A": "Only unchanged selected tokens contribute to the loss",
+      "B": "Every input token contributes equally to the loss at every layer",
+      "C": "Only [CLS] and [SEP] tokens contribute to the loss",
+      "D": "Only the sampled/manipulated tokens contribute to the loss, although all tokens participate in self-attention"
+    },
+    "answer": "D",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.2.1 Masking Words",
+    "page_number": 5,
+    "evidence": "The chapter notes that all input tokens play a role in self-attention, but only sampled tokens are used for learning and only the tokens in the masked set M play a role in the loss.",
+    "question_type": "method_detail"
+  },
+  {
+    "id": "benchmark_005",
+    "question": "Which special token's final-layer vector is used for BERT's next sentence prediction classifier?",
+    "choices": {
+      "A": "[SEP]",
+      "B": "[MASK]",
+      "C": "The final token of the second sentence",
+      "D": "[CLS]"
+    },
+    "answer": "D",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.2.2 Next Sentence Prediction",
+    "page_number": 7,
+    "evidence": "For NSP, the output vector from the final layer associated with the [CLS] token represents the next sentence prediction and is fed to an NSP head.",
+    "question_type": "architecture"
+  },
+  {
+    "id": "benchmark_006",
+    "question": "What three embeddings are summed to form each BERT input token representation for sentence-pair training?",
+    "choices": {
+      "A": "Word, character, and dependency embeddings",
+      "B": "Word, position, and first/second segment embeddings",
+      "C": "Subword, lemma, and part-of-speech embeddings",
+      "D": "Query, document, and relevance embeddings"
+    },
+    "answer": "B",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.2.2 Next Sentence Prediction",
+    "page_number": 7,
+    "evidence": "The chapter says each input token X is formed by summing word, position, and first/second segment embeddings.",
+    "question_type": "architecture"
+  },
+  {
+    "id": "benchmark_007",
+    "question": "How does RoBERTa-style training differ from original BERT with respect to the next sentence prediction objective?",
+    "choices": {
+      "A": "It replaces MLM with only next-token prediction",
+      "B": "It uses NSP but removes [CLS]",
+      "C": "It drops NSP and trains on contiguous sentences packed into 512-token inputs",
+      "D": "It uses sentence pairs only when the second sentence is randomly sampled"
+    },
+    "answer": "C",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.2.3 Training Regimes",
+    "page_number": 8,
+    "evidence": "The chapter says some models like RoBERTa drop NSP; their input is a series of contiguous sentences beginning with [CLS], with documents packed until 512 tokens are reached.",
+    "question_type": "ablation_or_comparison"
+  },
+  {
+    "id": "benchmark_008",
+    "question": "Why do multilingual masked language models often upweight less-represented languages when learning a tokenizer vocabulary?",
+    "choices": {
+      "A": "To eliminate the need for subword tokenization",
+      "B": "To make every language use the same alphabetic script",
+      "C": "To ensure that the model never uses SentencePiece",
+      "D": "To avoid a vocabulary biased toward rare English tokens and to include more frequent tokens from lower-resource languages"
+    },
+    "answer": "D",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.2.3 Training Regimes",
+    "page_number": 8,
+    "evidence": "The chapter explains that random sampling would overrepresent languages like English and bias the vocabulary toward rare English tokens; upweighting lower-resource languages improves multilingual tokenization.",
+    "question_type": "motivation"
+  },
+  {
+    "id": "benchmark_009",
+    "question": "What is the 'curse of multilinguality' as described in Chapter 10?",
+    "choices": {
+      "A": "Subword tokenizers cannot process more than one language",
+      "B": "Multilingual models cannot use web text during pretraining",
+      "C": "Low-resource languages always outperform high-resource languages",
+      "D": "As the number of languages grows very large, performance on each language degrades compared with training on fewer languages"
+    },
+    "answer": "D",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.2.3 Training Regimes",
+    "page_number": 8,
+    "evidence": "The chapter states that when the number of languages grows very large, multilingual models exhibit the curse of multilinguality: performance on each language degrades compared to a model trained on fewer languages.",
+    "question_type": "limitation"
+  },
+  {
+    "id": "benchmark_010",
+    "question": "What does Chapter 10 identify as a problem with multilingual models having 'an accent'?",
+    "choices": {
+      "A": "The model cannot learn contextual embeddings for any language",
+      "B": "The model can only generate text with pronunciation marks",
+      "C": "The model's WordPiece vocabulary is always limited to 30,000 tokens",
+      "D": "High-resource-language grammatical structures can bleed into lower-resource languages, making their representations more English-like"
+    },
+    "answer": "D",
+    "difficulty": "very_hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.2.3 Training Regimes",
+    "page_number": 8,
+    "evidence": "The chapter says multilingual models can have an accent: grammatical structures from higher-resource languages, often English, bleed into lower-resource languages and make representations more English-like.",
+    "question_type": "limitation"
+  },
+  {
+    "id": "benchmark_011",
+    "question": "How does Chapter 10 define contextual embeddings produced by a pretrained masked language model?",
+    "choices": {
+      "A": "One fixed vector for each vocabulary type regardless of context",
+      "B": "Vectors that represent tokens in context, often taken from the model's final-layer output for each token",
+      "C": "A bag-of-words count vector over an entire document",
+      "D": "A two-class prediction vector used only for NSP"
+    },
+    "answer": "B",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.3 Contextual Embeddings",
+    "page_number": 9,
+    "evidence": "Given a pretrained model and a new sentence, the sequence of model outputs can be treated as contextual embeddings for each input token, representing aspects of meaning in context.",
+    "question_type": "definition"
+  },
+  {
+    "id": "benchmark_012",
+    "question": "What does the visualization of BERT embeddings for the word 'die' in English and German illustrate?",
+    "choices": {
+      "A": "The [MASK] token has no semantic representation",
+      "B": "All senses of a word collapse to one cluster regardless of language",
+      "C": "Different English senses and German/English meanings form different clusters in contextual-embedding space",
+      "D": "WordPiece prevents cross-lingual comparison of embeddings"
+    },
+    "answer": "C",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.3 Contextual Embeddings",
+    "page_number": 10,
+    "evidence": "The figure caption says BERT contextual embeddings for 'die' from English and German sentences form clusters for German and English meanings and for different English senses.",
+    "question_type": "result_interpretation"
+  },
+  {
+    "id": "benchmark_013",
+    "question": "According to Chapter 10, what is word sense disambiguation?",
+    "choices": {
+      "A": "Training a subword tokenizer to split rare words",
+      "B": "Choosing the correct sense for a word in context from a fixed inventory such as WordNet",
+      "C": "Replacing selected tokens with random vocabulary items",
+      "D": "Ranking documents by cosine similarity"
+    },
+    "answer": "B",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.3 Contextual Embeddings",
+    "page_number": 10,
+    "evidence": "The chapter defines WSD as selecting the correct sense for a word in context from a fixed inventory of potential senses and outputting the correct word sense.",
+    "question_type": "definition"
+  },
+  {
+    "id": "benchmark_014",
+    "question": "What does Chapter 10 say about contextual embeddings and discrete word senses?",
+    "choices": {
+      "A": "Contextual embeddings only represent syntax and never semantics",
+      "B": "Contextual embeddings exactly reproduce WordNet's discrete sense inventory",
+      "C": "Contextual embeddings cannot represent word meaning at all",
+      "D": "Contextual embeddings are a continuous high-dimensional model of meaning that may be clustered but does not divide into fully discrete senses"
+    },
+    "answer": "D",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.3 Contextual Embeddings",
+    "page_number": 10,
+    "evidence": "The chapter contrasts WordNet's discrete lists of senses with embeddings, which offer a continuous high-dimensional model of meaning that can be clustered but is not fully discrete.",
+    "question_type": "result_interpretation"
+  },
+  {
+    "id": "benchmark_015",
+    "question": "What causes anisotropy in contextual embeddings according to the Timkey and van Schijndel discussion?",
+    "choices": {
+      "A": "The NSP classifier uses only two output classes",
+      "B": "All embeddings are forced to have exactly zero cosine similarity",
+      "C": "A small number of rogue dimensions with very large magnitudes and variance dominate cosine measures",
+      "D": "Subword tokenization maps every word to a single identical token"
+    },
+    "answer": "C",
+    "difficulty": "very_hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.3 Contextual Embeddings",
+    "page_number": 12,
+    "evidence": "The chapter says cosine measures can be dominated by a small number of embedding dimensions with unusually large magnitudes and high variance, called rogue dimensions.",
+    "question_type": "limitation"
+  },
+  {
+    "id": "benchmark_016",
+    "question": "What operation is proposed to make contextual embeddings more isotropic?",
+    "choices": {
+      "A": "Dropping the [CLS] token during inference",
+      "B": "Standardizing or z-scoring vectors by subtracting the mean and dividing by the standard deviation",
+      "C": "Increasing the WordPiece vocabulary to 250,000 tokens",
+      "D": "Changing all MLM predictions into NSP predictions"
+    },
+    "answer": "B",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.3 Contextual Embeddings",
+    "page_number": 12,
+    "evidence": "The chapter says embeddings can be made more isotropic by standardizing them: subtracting the mean and dividing by the variance/standard deviation.",
+    "question_type": "method_detail"
+  },
+  {
+    "id": "benchmark_017",
+    "question": "For MultiNLI fine-tuning in Chapter 10, what is fed to the classification head?",
+    "choices": {
+      "A": "The average of all WordPiece token embeddings from both sentences",
+      "B": "The hidden state of the last token in the hypothesis",
+      "C": "The output vector for the [CLS] token from the bidirectional encoder",
+      "D": "A BM25-weighted vector of premise and hypothesis words"
+    },
+    "answer": "C",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.4 Fine-Tuning for Classification",
+    "page_number": 15,
+    "evidence": "To fine-tune MultiNLI, the premise/hypothesis pair is passed through a bidirectional encoder and the [CLS] output vector is used as input to a three-way classifier.",
+    "question_type": "architecture"
+  },
+  {
+    "id": "benchmark_018",
+    "question": "What is the main limitation of simply prompting an LLM for factual answers that motivates retrieval methods in Chapter 11?",
+    "choices": {
+      "A": "Prompting requires term-document matrices for every answer",
+      "B": "Prompting cannot generate any text without retrieved passages",
+      "C": "LLMs cannot answer factoid questions even if the answer was in pretraining",
+      "D": "Facts are stored in model weights, and generated factual answers can be incorrect or outdated"
+    },
+    "answer": "D",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11 Information Retrieval and Retrieval-Augmented Generation",
+    "page_number": 2,
+    "evidence": "The chapter says knowledge is stored in feedforward weights, which leads to problems for correctly generating factual text; prompting can work but LLMs are often incorrect.",
+    "question_type": "motivation"
+  },
+  {
+    "id": "benchmark_019",
+    "question": "In Chapter 11's terminology, what is a query?",
+    "choices": {
+      "A": "A set of documents used to satisfy user requests",
+      "B": "A word in a collection, possibly including phrases",
+      "C": "A user's information need expressed as a set of terms",
+      "D": "A learned embedding for an entire passage"
+    },
+    "answer": "C",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.1 Information Retrieval",
+    "page_number": 3,
+    "evidence": "The chapter defines a query as representing a user's information need expressed as a set of terms.",
+    "question_type": "definition"
+  },
+  {
+    "id": "benchmark_020",
+    "question": "What are the two broad classes of vectors used to represent queries and documents in the ad hoc IR architecture?",
+    "choices": {
+      "A": "Character vectors and phoneme vectors",
+      "B": "Sparse vectors and dense vectors",
+      "C": "Premise vectors and hypothesis vectors",
+      "D": "Gold vectors and predicted vectors"
+    },
+    "answer": "B",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.1 Information Retrieval",
+    "page_number": 3,
+    "evidence": "The ad hoc IR architecture abstracts over sparse and dense vector retrieval: sparse retrieval uses count vectors weighted by tf-idf or BM25, while dense retrieval uses embeddings.",
+    "question_type": "definition"
+  },
+  {
+    "id": "benchmark_021",
+    "question": "In the Shakespeare term-document matrix example, what does each cell contain?",
+    "choices": {
+      "A": "The cosine similarity between two documents",
+      "B": "The BM25 score of a query term",
+      "C": "The number of times a row word occurs in a column document",
+      "D": "The probability assigned by a language model to a word"
+    },
+    "answer": "C",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.1.1 Representing documents as vectors",
+    "page_number": 4,
+    "evidence": "The figure caption says each cell in the term-document matrix contains the number of times the row word occurs in the column document.",
+    "question_type": "dataset_detail"
+  },
+  {
+    "id": "benchmark_022",
+    "question": "Why are As You Like It and Twelfth Night described as more similar to each other than to Julius Caesar or Henry V in the term-document example?",
+    "choices": {
+      "A": "They have higher BM25 document-length normalization constants",
+      "B": "They are both represented by dense BERT embeddings",
+      "C": "They contain identical counts for every word in the vocabulary",
+      "D": "They have more similar counts for words like fool and wit and fewer battles"
+    },
+    "answer": "D",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.1.1 Representing documents as vectors",
+    "page_number": 5,
+    "evidence": "The chapter says the comedy vectors look more like each other, with more fools and wit than battles, than they look like Julius Caesar or Henry V.",
+    "question_type": "result_interpretation"
+  },
+  {
+    "id": "benchmark_023",
+    "question": "What is the intuition behind using log frequency rather than raw count in tf-idf?",
+    "choices": {
+      "A": "A word appearing 100 times should not make a document 100 times more relevant than a word appearing once",
+      "B": "Raw counts cannot be stored in a matrix",
+      "C": "Log frequency makes every word's score equal to zero",
+      "D": "It makes all rare words irrelevant"
+    },
+    "answer": "A",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.1.2 Term weighting: tf-idf and BM25",
+    "page_number": 6,
+    "evidence": "The chapter says term frequency is usually log10 of the word frequency because a word occurring 100 times should not make it proportionally 100 times more informative.",
+    "question_type": "motivation"
+  },
+  {
+    "id": "benchmark_024",
+    "question": "In classic tf-idf retrieval, what simplifying assumption underlies scoring a document by cosine similarity to the query?",
+    "choices": {
+      "A": "Only documents with no query words are relevant",
+      "B": "Documents that have similar words to the query are more relevant to the user's information need",
+      "C": "All documents are equally likely to be relevant",
+      "D": "The query must be encoded by a decoder-only model"
+    },
+    "answer": "B",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.1.3 Vector similarity",
+    "page_number": 7,
+    "evidence": "The chapter says tf-idf estimates relevance by geometric similarity in vector space, assuming documents with words similar to the query are more relevant.",
+    "question_type": "motivation"
+  },
+  {
+    "id": "benchmark_025",
+    "question": "In Chapter 11's precision-recall discussion, what happens to recall as more ranked documents are examined?",
+    "choices": {
+      "A": "It is non-decreasing; it increases when a relevant document is encountered and stays the same for non-relevant documents",
+      "B": "It decreases whenever a non-relevant document is encountered",
+      "C": "It is always equal to precision at the same rank",
+      "D": "It is undefined after the first relevant document"
+    },
+    "answer": "A",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.2 Evaluation of Information-Retrieval Systems",
+    "page_number": 10,
+    "evidence": "The chapter states that recall is non-decreasing: when a relevant document is encountered recall increases, and when a non-relevant document is found it remains unchanged.",
+    "question_type": "metric"
+  },
+  {
+    "id": "benchmark_026",
+    "question": "How is interpolated precision at a recall level r computed in Chapter 11?",
+    "choices": {
+      "A": "By averaging precision and recall at rank r",
+      "B": "By taking the minimum precision at any lower recall level",
+      "C": "By choosing the maximum precision value achieved at any recall level at or above r",
+      "D": "By computing exact match over the top-k answers"
+    },
+    "answer": "C",
+    "difficulty": "very_hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.2 Evaluation of Information-Retrieval Systems",
+    "page_number": 10,
+    "evidence": "The chapter defines interpolated precision as the maximum precision achieved at any level of recall at or above the recall level being calculated.",
+    "question_type": "metric"
+  },
+  {
+    "id": "benchmark_027",
+    "question": "What does a precision-recall curve that is higher toward the left indicate, according to Chapter 11?",
+    "choices": {
+      "A": "A system favoring precision over recall",
+      "B": "A system that cannot retrieve any relevant documents",
+      "C": "A system optimized only for free-text QA token F1",
+      "D": "A system using only dense vectors"
+    },
+    "answer": "A",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.2 Evaluation of Information-Retrieval Systems",
+    "page_number": 11,
+    "evidence": "The chapter says curves higher in precision toward the left may favor precision over recall, while systems geared toward recall are higher at higher recall levels.",
+    "question_type": "result_interpretation"
+  },
+  {
+    "id": "benchmark_028",
+    "question": "What is the vocabulary mismatch problem in sparse retrieval?",
+    "choices": {
+      "A": "The tokenizer assigns too many subwords to common words",
+      "B": "The query writer must guess the exact words the answer writer used",
+      "C": "The dense retriever stores all documents in GPU memory",
+      "D": "The document collection contains too many paragraphs"
+    },
+    "answer": "B",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.3 Dense Retrieval",
+    "page_number": 13,
+    "evidence": "The chapter describes vocabulary mismatch as requiring the user posing a query to guess exactly what words the answer writer might have used.",
+    "question_type": "limitation"
+  },
+  {
+    "id": "benchmark_029",
+    "question": "What solution does Chapter 11 introduce for vocabulary mismatch?",
+    "choices": {
+      "A": "Using dense embeddings that can handle synonymy instead of sparse word-count vectors",
+      "B": "Removing all synonyms from the document collection",
+      "C": "Using only exact-match multiple-choice questions",
+      "D": "Increasing the number of fixed recall levels"
+    },
+    "answer": "A",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.3 Dense Retrieval",
+    "page_number": 13,
+    "evidence": "The chapter says the solution to vocabulary mismatch is an approach that handles synonymy: dense embeddings rather than sparse word-count vectors.",
+    "question_type": "method_detail"
+  },
+  {
+    "id": "benchmark_030",
+    "question": "In the full BERT dense retrieval architecture, how is a query-document pair represented before scoring?",
+    "choices": {
+      "A": "By concatenating q and d with [SEP] and using the [CLS] representation from BERT",
+      "B": "By computing a BM25 score for each term independently",
+      "C": "By averaging all document chunks before seeing the query",
+      "D": "By using only the final decoder token of a causal language model"
+    },
+    "answer": "A",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.3 Dense Retrieval",
+    "page_number": 13,
+    "evidence": "The chapter gives z = BERT(q; [SEP]; d)[CLS] and then applies a linear layer to score the query-document tuple.",
+    "question_type": "architecture"
+  },
+  {
+    "id": "benchmark_031",
+    "question": "Why are documents usually broken into passages for dense retrieval rather than encoded as entire documents?",
+    "choices": {
+      "A": "Because all documents must be exactly 100 characters long",
+      "B": "Because the query and document passage must fit within BERT's 512-token window, sometimes by truncation",
+      "C": "Because passage retrieval prevents any need for indexing",
+      "D": "Because full documents cannot be assigned relevance labels"
+    },
+    "answer": "B",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.3 Dense Retrieval",
+    "page_number": 13,
+    "evidence": "The chapter says retrieval is usually over passages, such as fixed-length chunks, and the query and document must fit in the 512-token BERT window.",
+    "question_type": "implementation_detail"
+  },
+  {
+    "id": "benchmark_032",
+    "question": "What is the computational advantage of a bi-encoder compared with the full BERT query-document encoder?",
+    "choices": {
+      "A": "It pre-encodes documents once with a separate document encoder, avoiding joint BERT encoding of every document for each query",
+      "B": "It eliminates embeddings and returns to exact word counts",
+      "C": "It always produces higher accuracy than reranking",
+      "D": "It requires no index or query encoder"
+    },
+    "answer": "A",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.3 Dense Retrieval",
+    "page_number": 13,
+    "evidence": "After describing full BERT's expense, the chapter introduces the bi-encoder as efficient because documents can be encoded once using separate encoder models.",
+    "question_type": "ablation_or_comparison"
+  },
+  {
+    "id": "benchmark_033",
+    "question": "What are the three basic steps in the simplest RAG algorithm described in Chapter 11?",
+    "choices": {
+      "A": "Retrieve top-k passages, create a prompt containing the query and passages, then call an LLM",
+      "B": "Train a tokenizer, compute BM25, then fine-tune a classifier",
+      "C": "Generate an answer, retrieve supporting passages, then discard the prompt",
+      "D": "Run NSP, MLM, and exact match evaluation"
+    },
+    "answer": "A",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.4 Retrieval-Augmented Generation (RAG)",
+    "page_number": 17,
+    "evidence": "The chapter lists basic RAG as: call a retriever to return top-k relevant passages, create a prompt with the query and retrieved passages, and call an LLM with the prompt.",
+    "question_type": "method_detail"
+  },
+  {
+    "id": "benchmark_034",
+    "question": "What distinguishes agent-based RAG from the simple RAG paradigm described first?",
+    "choices": {
+      "A": "The system always retrieves from the same collection for every user turn",
+      "B": "The system decides when to call retrieval and which collection to retrieve from",
+      "C": "The system removes the generator and returns only ranked documents",
+      "D": "The system can only answer multiple-choice questions"
+    },
+    "answer": "B",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.4 Retrieval-Augmented Generation (RAG)",
+    "page_number": 17,
+    "evidence": "In agent-based RAG, the system decides when to call a retrieval agent and for which collection, rather than always retrieving for every turn.",
+    "question_type": "method_detail"
+  },
+  {
+    "id": "benchmark_035",
+    "question": "In Chapter 13, what makes a network recurrent?",
+    "choices": {
+      "A": "It contains a cycle in its network connections so a unit can depend directly or indirectly on its earlier outputs",
+      "B": "It uses only feedforward layers without hidden state",
+      "C": "It requires a transformer self-attention mask",
+      "D": "It stores documents in a term-document matrix"
+    },
+    "answer": "A",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.1 Recurrent Neural Networks",
+    "page_number": 1,
+    "evidence": "The chapter defines an RNN as any network containing a cycle in its connections, meaning some unit's value depends on its own earlier outputs as input.",
+    "question_type": "definition"
+  },
+  {
+    "id": "benchmark_036",
+    "question": "In the simple recurrent network described in Chapter 13, what provides memory or context for the current time step?",
+    "choices": {
+      "A": "The tf-idf vector of the current document",
+      "B": "The hidden layer from the previous time step",
+      "C": "The [CLS] vector from a bidirectional encoder",
+      "D": "The output softmax from the next time step"
+    },
+    "answer": "B",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.1 Recurrent Neural Networks",
+    "page_number": 2,
+    "evidence": "The hidden layer from the previous time step provides a form of memory or context that encodes earlier processing and informs current decisions.",
+    "question_type": "architecture"
+  },
+  {
+    "id": "benchmark_037",
+    "question": "How do RNNs handle the temporal nature of language differently from arbitrary fixed-size windows?",
+    "choices": {
+      "A": "They process language only as unordered bags of words",
+      "B": "They ignore previous words and use only the current token",
+      "C": "They use recurrent connections to represent prior context over time",
+      "D": "They require all sentences to be padded to exactly 512 tokens"
+    },
+    "answer": "C",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13 RNNs and LSTMs",
+    "page_number": 1,
+    "evidence": "The chapter says recurrent connections offer a way to represent prior context and allow model decisions to depend on information from hundreds of words in the past.",
+    "question_type": "motivation"
+  },
+  {
+    "id": "benchmark_038",
+    "question": "In an RNN language model, why can the output softmax matrix be tied to the input embedding matrix?",
+    "choices": {
+      "A": "Because the model never learns word embeddings",
+      "B": "Because the rows of the output matrix have the transpose shape of the embedding matrix when embedding and hidden dimensions match",
+      "C": "Because the output vocabulary is always smaller than the input vocabulary",
+      "D": "Because RNNs do not use hidden states for prediction"
+    },
+    "answer": "B",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.2.3 Weight Tying",
+    "page_number": 7,
+    "evidence": "The chapter says E has shape d by |V| and V has shape |V| by d, so V is shaped like the transpose of E and can be replaced by E transposed.",
+    "question_type": "implementation_detail"
+  },
+  {
+    "id": "benchmark_039",
+    "question": "What benefit of weight tying is stated in Chapter 13?",
+    "choices": {
+      "A": "It removes the need for cross-entropy loss",
+      "B": "It lets the model process all documents in a collection jointly",
+      "C": "It improves model perplexity and significantly reduces the number of parameters",
+      "D": "It eliminates all recurrent connections"
+    },
+    "answer": "C",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.2.3 Weight Tying",
+    "page_number": 8,
+    "evidence": "The chapter states that weight tying improves model perplexity and significantly reduces the number of parameters required for the model.",
+    "question_type": "result_interpretation"
+  },
+  {
+    "id": "benchmark_040",
+    "question": "For RNN sequence labeling such as POS tagging, what does the softmax output at each time step represent?",
+    "choices": {
+      "A": "A distribution over the fixed tagset for the current token",
+      "B": "The probability that the entire sentence is positive or negative",
+      "C": "A ranking over retrieved passages",
+      "D": "A two-class NSP decision"
+    },
+    "answer": "A",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.3.1 Sequence Labeling",
+    "page_number": 8,
+    "evidence": "The chapter says sequence labeling outputs are tag probabilities generated by a softmax layer over the tagset at each time step.",
+    "question_type": "method_detail"
+  },
+  {
+    "id": "benchmark_041",
+    "question": "What does Chapter 13 identify as the only additional external complexity of an LSTM unit over a simple recurrent unit?",
+    "choices": {
+      "A": "An inverted index for hidden states",
+      "B": "A [SEP] token between every pair of inputs",
+      "C": "A BM25 score in the output layer",
+      "D": "An additional context vector as both input and output"
+    },
+    "answer": "D",
+    "difficulty": "very_hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.5.1 Gated Units, Layers and Networks",
+    "page_number": 16,
+    "evidence": "The chapter says LSTM unit complexity is encapsulated inside the unit; the only additional external complexity over a basic recurrent unit is the additional context vector as input and output.",
+    "question_type": "architecture"
+  },
+  {
+    "id": "benchmark_042",
+    "question": "Which gate in the LSTM is described as deciding what information is required for the current hidden state rather than what must be preserved for future decisions?",
+    "choices": {
+      "A": "The output gate",
+      "B": "The forget gate",
+      "C": "The add gate",
+      "D": "The input token gate"
+    },
+    "answer": "A",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.5 Long Short-Term Memory",
+    "page_number": 15,
+    "evidence": "The output gate is used to decide what information is required for the current hidden state, as opposed to what must be preserved for future decisions.",
+    "question_type": "architecture"
+  },
+  {
+    "id": "benchmark_043",
+    "question": "What are the inputs and outputs of a single LSTM unit in Figure 13.13?",
+    "choices": {
+      "A": "Inputs are query and document vectors; output is a relevance score",
+      "B": "Inputs are [CLS] and [SEP]; outputs are segment embeddings",
+      "C": "Inputs are the current input, previous hidden state, and previous context; outputs are a new hidden state and updated context",
+      "D": "Inputs are all encoder hidden states; output is a precision-recall curve"
+    },
+    "answer": "C",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.5 Long Short-Term Memory",
+    "page_number": 16,
+    "evidence": "The figure caption states that an LSTM unit takes current input x, previous hidden state, and previous context as inputs, and outputs a new hidden state and updated context.",
+    "question_type": "architecture"
+  },
+  {
+    "id": "benchmark_044",
+    "question": "What does Chapter 13 say provides the output of an LSTM at each time step?",
+    "choices": {
+      "A": "The context vector ct only",
+      "B": "The hidden state ht",
+      "C": "The forget gate ft only",
+      "D": "The input embedding matrix E"
+    },
+    "answer": "B",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.5 Long Short-Term Memory",
+    "page_number": 15,
+    "evidence": "The chapter states that the hidden state ht provides the output for the LSTM at each time step.",
+    "question_type": "method_detail"
+  },
+  {
+    "id": "benchmark_045",
+    "question": "In encoder-decoder training with teacher forcing, what is used as the decoder's next input?",
+    "choices": {
+      "A": "The retrieved top-k passage",
+      "B": "The model's own possibly erroneous previous output",
+      "C": "The gold target token from training",
+      "D": "The previous source-language token"
+    },
+    "answer": "C",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.7 Encoder-Decoder Networks",
+    "page_number": 21,
+    "evidence": "Teacher forcing means forcing the system to use the gold target token from training as the next decoder input rather than relying on the possibly erroneous decoder output.",
+    "question_type": "implementation_detail"
+  },
+  {
+    "id": "benchmark_046",
+    "question": "Why is teacher forcing used during encoder-decoder training according to Chapter 13?",
+    "choices": {
+      "A": "It speeds up training",
+      "B": "It prevents the model from computing a loss",
+      "C": "It removes the need for a decoder",
+      "D": "It makes attention unnecessary"
+    },
+    "answer": "A",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.7 Encoder-Decoder Networks",
+    "page_number": 21,
+    "evidence": "The chapter says teacher forcing uses gold target tokens rather than model outputs as decoder inputs, and that this speeds up training.",
+    "question_type": "motivation"
+  },
+  {
+    "id": "benchmark_047",
+    "question": "In Figure 13.19's encoder-decoder training setup, how is the sentence loss described?",
+    "choices": {
+      "A": "As BM25 over source and target terms",
+      "B": "As exact match over a multiple-choice answer",
+      "C": "As cosine similarity between source and target embeddings",
+      "D": "As the average cross-entropy loss per target word"
+    },
+    "answer": "D",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.7 Encoder-Decoder Networks",
+    "page_number": 21,
+    "evidence": "The figure caption says the softmax output distribution is used to compute loss at each token, which is averaged to compute the sentence loss; the figure labels this as average cross-entropy per target word.",
+    "question_type": "metric"
+  },
+  {
+    "id": "benchmark_048",
+    "question": "What is the bottleneck in the basic encoder-decoder model before attention is added?",
+    "choices": {
+      "A": "The decoder only knows the source text through the final encoder hidden state context vector",
+      "B": "The encoder is unable to build hidden states for source words",
+      "C": "The decoder cannot produce softmax distributions",
+      "D": "The model cannot be trained with target-language sentences"
+    },
+    "answer": "A",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.8 Attention",
+    "page_number": 22,
+    "evidence": "The final hidden state acts as a bottleneck because it must represent all source-text meaning; the decoder only knows what is in that context vector.",
+    "question_type": "limitation"
+  },
+  {
+    "id": "benchmark_049",
+    "question": "What is the attention mechanism's solution to the encoder-decoder bottleneck?",
+    "choices": {
+      "A": "It removes recurrent connections from the encoder",
+      "B": "It forces all source information through the final hidden state",
+      "C": "It lets the decoder get information from all encoder hidden states, not just the last one",
+      "D": "It replaces target tokens with [MASK]"
+    },
+    "answer": "C",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.8 Attention",
+    "page_number": 22,
+    "evidence": "The chapter defines attention as a solution to the bottleneck problem that allows the decoder to get information from all encoder hidden states, not only the last hidden state.",
+    "question_type": "method_detail"
+  },
+  {
+    "id": "benchmark_050",
+    "question": "Why can information at the beginning of a long source sentence be poorly represented in the basic encoder-decoder context vector?",
+    "choices": {
+      "A": "Because the tokenizer removes the first word of every sentence",
+      "B": "Because all information must pass through the final hidden state, and earlier information may not be equally well represented there",
+      "C": "Because the decoder is trained only on sparse vectors",
+      "D": "Because RNNs are restricted to one-word inputs and no hidden state"
+    },
+    "answer": "B",
+    "difficulty": "very_hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.8 Attention",
+    "page_number": 22,
+    "evidence": "The chapter says the final hidden state must carry everything about the source text, so information at the beginning of long sentences may not be equally well represented in the context vector.",
+    "question_type": "limitation"
+  }
+]

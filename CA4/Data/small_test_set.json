@@ -1,0 +1,87 @@
+[
+  {
+    "id": "small_001",
+    "question": "In BERT-style masked language modeling, why are some selected tokens left unchanged or replaced with random tokens instead of always being replaced by [MASK]?",
+    "choices": {
+      "A": "To make the tokenizer learn a larger vocabulary during pretraining",
+      "B": "To reduce the mismatch between pretraining and downstream use, where [MASK] tokens are absent",
+      "C": "To force the model to predict only sentence-level labels from [CLS]",
+      "D": "To make next-sentence prediction converge in fewer epochs"
+    },
+    "answer": "B",
+    "difficulty": "medium",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.2.1 Masking Words",
+    "page_number": 5,
+    "evidence": "The chapter says that always adding [MASK] would create a mismatch because downstream tasks do not use [MASK] tokens; the model should learn to predict input tokens generally, not only when it sees [MASK].",
+    "question_type": "motivation"
+  },
+  {
+    "id": "small_002",
+    "question": "In the dense retrieval discussion, why is the full BERT query-document encoder described as impractical for real retrieval systems?",
+    "choices": {
+      "A": "It can only represent documents as sparse unigram vectors",
+      "B": "It cannot be fine-tuned with relevance labels",
+      "C": "It requires every document to be jointly encoded with each new query",
+      "D": "It cannot fit a query and a document in a single input window under any truncation"
+    },
+    "answer": "C",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.3 Dense Retrieval",
+    "page_number": 13,
+    "evidence": "The chapter explains that the full BERT architecture encodes the query and document together, so each new query would require passing every document in the collection through BERT, which is impractical.",
+    "question_type": "ablation_or_comparison"
+  },
+  {
+    "id": "small_003",
+    "question": "What bottleneck does the attention mechanism address in the basic RNN encoder-decoder model?",
+    "choices": {
+      "A": "The decoder must rely on only the encoder's final hidden state as the representation of the entire source sentence",
+      "B": "The encoder cannot be trained with cross-entropy loss when target words are available",
+      "C": "The decoder cannot use teacher forcing because it lacks access to gold target tokens",
+      "D": "The encoder and decoder cannot share any vocabulary embeddings"
+    },
+    "answer": "A",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/13.pdf",
+    "source_section": "13.8 Attention",
+    "page_number": 22,
+    "evidence": "The chapter describes the final encoder hidden state as a bottleneck because it must contain everything about the source text; attention solves this by giving the decoder access to all encoder hidden states.",
+    "question_type": "motivation"
+  },
+  {
+    "id": "small_004",
+    "question": "In original BERT's next sentence prediction setup, how are negative sentence pairs constructed?",
+    "choices": {
+      "A": "Both sentences are drawn from the same document but in reversed order",
+      "B": "The first sentence is replaced by a [MASK] sequence of the same length",
+      "C": "The second sentence is translated into a different language",
+      "D": "The second sentence is randomly selected from elsewhere in the corpus"
+    },
+    "answer": "D",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/10.pdf",
+    "source_section": "10.2.2 Next Sentence Prediction",
+    "page_number": 6,
+    "evidence": "For BERT NSP, 50% of training pairs are positive adjacent sentence pairs; in the other 50%, the second sentence is randomly selected from elsewhere in the corpus.",
+    "question_type": "method_detail"
+  },
+  {
+    "id": "small_005",
+    "question": "According to Chapter 11, which evaluation metric is commonly used for free-text question answering such as Natural Questions?",
+    "choices": {
+      "A": "Interpolated precision at 11 recall levels",
+      "B": "Exact match over four answer options",
+      "C": "Token F1 based on overlap between predicted and gold answers",
+      "D": "Cosine similarity between tf-idf vectors"
+    },
+    "answer": "C",
+    "difficulty": "hard",
+    "source_document": "https://web.stanford.edu/~jurafsky/slp3/11.pdf",
+    "source_section": "11.6 Evaluating Question Answering",
+    "page_number": 20,
+    "evidence": "The chapter says multiple-choice questions are evaluated with exact match, while free-text answers such as Natural Questions are commonly evaluated with token F1, measuring partial token overlap.",
+    "question_type": "metric"
+  }
+]
